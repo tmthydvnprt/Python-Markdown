@@ -33,3 +33,12 @@ You may ask for help and discuss various other issues on the [mailing list][] an
 
 [mailing list]: http://lists.sourceforge.net/lists/listinfo/python-markdown-discuss
 [bug tracker]: http://github.com/waylan/Python-Markdown/issues 
+
+Updates:
+--------
+
+`markdown.extensions.footnotes` was edited to allow custom footnote placement.
+`markdown.extensions.codehilite` was edited to allow language and guessed language class.
+`markdown.extensions.tables` was edited to splits row based on more robust regex to ignore escaped backslash (`\|`).
+`markdown.extensions.tables` was edited to allow attribute lists to be defined on first line after table.
+
