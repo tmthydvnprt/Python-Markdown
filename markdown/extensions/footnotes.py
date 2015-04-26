@@ -89,6 +89,7 @@ class FootnoteExtension(Extension):
     def findFootnotesPlaceholder(self, root):
         """ Return ElementTree Element that contains Footnote placeholder. """
         def finder(element):
+            placeholder = None
             for child in element:
                 if child.text:
                     if child.text.find(self.getConfig("PLACE_MARKER")) > -1:
@@ -96,8 +97,8 @@ class FootnoteExtension(Extension):
                 if child.tail:
                     if child.tail.find(self.getConfig("PLACE_MARKER")) > -1:
                         return child, element, False
-                finder(child)
-            return None
+                placeholder = finder(child)
+            return placeholder
 
         res = finder(root)
         return res
