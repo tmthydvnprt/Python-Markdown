@@ -20,7 +20,9 @@ from __future__ import unicode_literals
 from . import Extension
 from ..blockprocessors import BlockProcessor
 from ..util import etree
+import re
 
+UNESCAPED_PIPE_RE = re.compile(r'(?<!\\)\|')
 
 class TableProcessor(BlockProcessor):
     """ Process Tables. """
@@ -85,7 +87,7 @@ class TableProcessor(BlockProcessor):
                 row = row[1:]
             if row.endswith('|'):
                 row = row[:-1]
-        return row.split('|')
+        return [x.replace(r'\|', r'|') for x in UNESCAPED_PIPE_RE.split(row)]
 
 
 class TableExtension(Extension):
