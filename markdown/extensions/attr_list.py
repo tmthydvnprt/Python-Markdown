@@ -46,9 +46,9 @@ def _handle_key_value(s, t):
 
 
 def _handle_word(s, t):
-    if t.startswith('.'):
+    if len(t) > 0 and t[0] == '.':
         return '.', t[1:]
-    if t.startswith('#'):
+    if len(t) > 0 and t[0] == '#':
         return 'id', t[1:]
     return t, t
 
