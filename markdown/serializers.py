@@ -142,9 +142,9 @@ def _serialize_html(write, elem, qnames, namespaces, format):
     tag = elem.tag
     text = elem.text
     if tag is Comment:
-        write("<!--%s-->" % _escape_cdata(text))
+        write("<!--" + _escape_cdata(text) + "-->")
     elif tag is ProcessingInstruction:
-        write("<?%s?>" % _escape_cdata(text))
+        write("<?" + _escape_cdata(text) + "?>")
     else:
         tag = qnames[tag]
         if tag is None:
@@ -166,7 +166,7 @@ def _serialize_html(write, elem, qnames, namespaces, format):
                         v = _escape_attrib_html(v)
                     if qnames[k] == v and format == 'html':
                         # handle boolean attributes
-                        write(" %s" % v)
+                        write(" " + v)
                     else:
                         write(" %s=\"%s\"" % (qnames[k], v))
                 if namespaces:
@@ -231,11 +231,11 @@ def _namespaces(elem, default_namespace=None):
                 if prefix is None:
                     prefix = _namespace_map.get(uri)
                     if prefix is None:
-                        prefix = "ns%d" % len(namespaces)
+                        prefix = "ns" + str(len(namespaces))
                     if prefix != "xml":
                         namespaces[uri] = prefix
                 if prefix:
-                    qnames[qname] = "%s:%s" % (prefix, tag)
+                    qnames[qname] = prefix + ":" + tag
                 else:
                     qnames[qname] = tag  # default element
             else:
