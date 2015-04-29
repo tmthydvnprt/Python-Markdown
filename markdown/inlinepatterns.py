@@ -272,7 +272,7 @@ class EscapePattern(Pattern):
     def handleMatch(self, m):
         char = m.group(2)
         if char in self.markdown.ESCAPED_CHARS:
-            return '%s%s%s' % (util.STX, ord(char), util.ETX)
+            return util.STX + str(ord(char)) + util.ETX
         else:
             return None
 
