@@ -90,8 +90,8 @@ class DefListProcessor(BlockProcessor):
 class DefListIndentProcessor(ListIndentProcessor):
     """ Process indented children of definition list items. """
 
-    ITEM_TYPES = ['dd']
-    LIST_TYPES = ['dl']
+    ITEM_TYPES = 'dd'
+    LIST_TYPES = {'dl'}
 
     def create_item(self, parent, block):
         """ Create a new dd and parse the block with it as the parent. """
