@@ -430,7 +430,7 @@ class HashHeaderProcessor(BlockProcessor):
                 # recursively parse this lines as a block.
                 self.parser.parseBlocks(parent, [before])
             # Create header using named groups from RE
-            h = util.etree.SubElement(parent, 'h%d' % len(m.group('level')))
+            h = util.etree.SubElement(parent, 'h' + str(len(m.group('level'))))
             h.text = m.group('header').strip()
             if after:
                 # Insert remaining lines as first block for future parsing.
