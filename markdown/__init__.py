@@ -75,8 +75,8 @@ class Markdown(object):
         'xhtml5': to_xhtml_string,
     }
 
-    ESCAPED_CHARS = ['\\', '`', '*', '_', '{', '}', '[', ']',
-                     '(', ')', '>', '#', '+', '-', '.', '!']
+    ESCAPED_CHARS = {'\\', '`', '*', '_', '{', '}', '[', ']',
+                     '(', ')', '>', '#', '+', '-', '.', '!'}
 
     def __init__(self, *args, **kwargs):
         """
