@@ -43,6 +43,10 @@ class Preprocessor(util.Processor):
         """
         pass  # pragma: no cover
 
+MULTIPLE_EMPTY_LINES_RE = re.compile(r'(?<=\n) +\n')
+PHP_ETC = {'?', '@', '%'}
+COMMENT_PHP_ETC = {'!'} | PHP_ETC
+HRS = {'hr', 'hr/'}
 
 class NormalizeWhitespace(Preprocessor):
     """ Normalize whitespace for consistant parsing. """
@@ -52,7 +56,7 @@ class NormalizeWhitespace(Preprocessor):
         source = source.replace(util.STX, "").replace(util.ETX, "")
         source = source.replace("\r\n", "\n").replace("\r", "\n") + "\n\n"
         source = source.expandtabs(self.markdown.tab_length)
-        source = re.sub(r'(?<=\n) +\n', '\n', source)
+        source = MULTIPLE_EMPTY_LINES_RE.sub('\n', source)
         return source.split('\n')
 
 
@@ -129,7 +133,7 @@ class HtmlBlockPreprocessor(Preprocessor):
         return block.rstrip()[-left_index:-1].lower(), len(block)
 
     def _equal_tags(self, left_tag, right_tag):
-        if left_tag[0] in ['?', '@', '%']:  # handle PHP, etc.
+        if left_tag[0] in PHP_ETC:  # handle PHP, etc.
             return True
         if ("/" + left_tag) == right_tag:
             return True
@@ -141,7 +145,7 @@ class HtmlBlockPreprocessor(Preprocessor):
             return False
 
     def _is_oneliner(self, tag):
-        return (tag in ['hr', 'hr/'])
+        return (tag in HRS)
 
     def _stringindex_to_listindex(self, stringindex, items):
         """
@@ -220,7 +224,7 @@ class HtmlBlockPreprocessor(Preprocessor):
                         text.insert(0, block[data_index:])
                         block = block[:data_index]
 
-                    if not (util.isBlockLevel(left_tag) or block[1] in ["!", "?", "@", "%"]):
+                    if not (util.isBlockLevel(left_tag) or block[1] in COMMENT_PHP_ETC):
                         new_blocks.append(block)
                         continue
 
