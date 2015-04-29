@@ -519,9 +519,7 @@ class EmptyBlockProcessor(BlockProcessor):
         if (sibling is not None and sibling.tag == 'pre' and
            len(sibling) and sibling[0].tag == 'code'):
             # Last block is a codeblock. Append to preserve whitespace.
-            sibling[0].text = util.AtomicString(
-                '%s%s' % (sibling[0].text, filler)
-            )
+            sibling[0].text = util.AtomicString(sibling[0].text + filler)
 
 
 class ParagraphProcessor(BlockProcessor):
