@@ -188,6 +188,19 @@ def codepoint2name(code):
     else:
         return ''.join((util.AMP_SUBSTITUTE, '#', str(code), ';'))
 
+def itertext(el):  # pragma: no cover
+    """Reimplement Element.itertext for older python versions"""
+    tag = el.tag
+    if not isinstance(tag, util.string_type) and tag is not None:
+        return
+    if el.text:
+        yield el.text
+    for e in el:
+        for s in itertext(e):
+            yield s
+        if e.tail:
+            yield e.tail
+
 """
 The pattern classes
 -----------------------------------------------------------------------------
@@ -241,19 +254,6 @@ class Pattern(object):
             stash = self.markdown.treeprocessors['inline'].stashed_nodes
         except KeyError:  # pragma: no cover
             return text
-
-        def itertext(el):  # pragma: no cover
-            ' Reimplement Element.itertext for older python versions '
-            tag = el.tag
-            if not isinstance(tag, util.string_type) and tag is not None:
-                return
-            if el.text:
-                yield el.text
-            for e in el:
-                for s in itertext(e):
-                    yield s
-                if e.tail:
-                    yield e.tail
 
         def get_stash(m):
             id = m.group(1)
