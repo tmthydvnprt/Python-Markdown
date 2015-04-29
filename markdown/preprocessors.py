@@ -126,7 +126,7 @@ class HtmlBlockPreprocessor(Preprocessor):
         for p in self.right_tag_patterns:
             tag = p % left_tag
             i = self._recursive_tagfind(
-                "<%s" % left_tag, tag, left_index, block
+                "<" + left_tag, tag, left_index, block
             )
             if i > 2:
                 return tag.lstrip("<").rstrip(">"), i
