@@ -523,9 +523,7 @@ class AutomailPattern(Pattern):
     """
     def handleMatch(self, m):
         el = util.etree.Element('a')
-        email = self.unescape(m.group(2))
-        if email.startswith("mailto:"):
-            email = email[len("mailto:"):]
+        email = self.unescape(m.group(2)).replace('mailto:', '')
 
         def codepoint2name(code):
             """Return entity definition by code, or the code if not defined."""
