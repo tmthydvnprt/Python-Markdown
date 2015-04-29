@@ -223,7 +223,7 @@ class CodeBlockProcessor(BlockProcessor):
     """ Process code blocks. """
 
     def test(self, parent, block):
-        return block.startswith(' '*self.tab_length)
+        return len(block) > self.tab_length - 1 and block[:self.tab_length] == ' '*self.tab_length
 
     def run(self, parent, blocks):
         sibling = self.lastChild(parent)
