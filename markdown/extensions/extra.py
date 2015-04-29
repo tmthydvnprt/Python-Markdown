@@ -46,6 +46,7 @@ extensions = [
     'markdown.extensions.abbr'
 ]
 
+SPAN_TAG_SET = {'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'dd', 'dt', 'td', 'th', 'legend', 'address'}
 
 class ExtraExtension(Extension):
     """ Add various extensions to Markdown class."""
@@ -116,11 +117,11 @@ class MarkdownInHtmlProcessor(BlockProcessor):
             del blocks[:tag['right_index']]
 
         # Process Text
-        if (self.parser.blockprocessors.contain_span_tags.match(  # Span Mode
-                tag['tag']) and markdown_value != 'block') or \
-                markdown_value == 'span':
+        # Span Mode
+        if (tag['tag'].lower() in SPAN_TAG_SET and markdown_value != 'block') or markdown_value == 'span':
             element.text = '\n'.join(block)
-        else:                                                     # Block Mode
+        # Block Mode
+        else:
             i = self.parser.blockprocessors.tag_counter + 1
             if len(self._tag_data) > i and self._tag_data[i]['left_index']:
                 first_subelement_index = self._tag_data[i]['left_index'] - 1
