@@ -135,8 +135,8 @@ class ListIndentProcessor(BlockProcessor):
 
     """
 
-    ITEM_TYPES = ['li']
-    LIST_TYPES = ['ul', 'ol']
+    ITEM_TYPES = 'li'
+    LIST_TYPES = {'ul', 'ol'}
 
     def __init__(self, *args):
         BlockProcessor.__init__(self, *args)
@@ -145,7 +145,7 @@ class ListIndentProcessor(BlockProcessor):
     def test(self, parent, block):
         return block.startswith(' '*self.tab_length) and \
             not self.parser.state.isstate('detabbed') and \
-            (parent.tag in self.ITEM_TYPES or
+            (parent.tag == self.ITEM_TYPES or
                 (len(parent) and parent[-1] is not None and
                     (parent[-1].tag in self.LIST_TYPES)))
 
@@ -155,7 +155,7 @@ class ListIndentProcessor(BlockProcessor):
         block = self.looseDetab(block, level)
 
         self.parser.state.set('detabbed')
-        if parent.tag in self.ITEM_TYPES:
+        if parent.tag == self.ITEM_TYPES:
             # It's possible that this parent has a 'ul' or 'ol' child list
             # with a member.  If that is the case, then that should be the
             # parent.  This is intended to catch the edge case of an indented
@@ -166,10 +166,10 @@ class ListIndentProcessor(BlockProcessor):
             else:
                 # The parent is already a li. Just parse the child block.
                 self.parser.parseBlocks(parent, [block])
-        elif sibling.tag in self.ITEM_TYPES:
+        elif sibling.tag == self.ITEM_TYPES:
             # The sibling is a li. Use it as parent.
             self.parser.parseBlocks(sibling, [block])
-        elif len(sibling) and sibling[-1].tag in self.ITEM_TYPES:
+        elif len(sibling) and sibling[-1].tag == self.ITEM_TYPES:
             # The parent is a list (``ol`` or ``ul``) which has children.
             # Assume the last child li is the parent of this block.
             if sibling[-1].text:
