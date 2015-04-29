@@ -135,11 +135,11 @@ class HtmlBlockPreprocessor(Preprocessor):
     def _equal_tags(self, left_tag, right_tag):
         if left_tag[0] in PHP_ETC:  # handle PHP, etc.
             return True
-        if ("/" + left_tag) == right_tag:
-            return True
-        if (right_tag == "--" and left_tag == "--"):
+        elif left_tag[0] == "/" and left_tag[1:] == right_tag:
             return True
         elif left_tag == right_tag[1:] and right_tag[0] == "/":
+            return True
+        elif (right_tag == "--" and left_tag == "--"):
             return True
         else:
             return False
