@@ -75,11 +75,9 @@ class BlockProcessor:
 
     def looseDetab(self, text, level=1):
         """ Remove a tab from front of lines but allowing dedented lines. """
-        lines = text.split('\n')
-        for i in range(len(lines)):
-            if lines[i].startswith(' '*self.tab_length*level):
-                lines[i] = lines[i][self.tab_length*level:]
-        return '\n'.join(lines)
+        return '\n'.join([line[self.tab_length*level:] 
+                          for line in text.split('\n') 
+                            if line.startswith(' '*self.tab_length*level)])
 
     def test(self, parent, block):
         """ Test for block type. Must be overridden by subclasses.
