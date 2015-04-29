@@ -67,10 +67,8 @@ class AbbrPreprocessor(Preprocessor):
         know what they will be beforehand.
 
         '''
-        chars = list(text)
-        for i in range(len(chars)):
-            chars[i] = r'[%s]' % chars[i]
-        return r'(?P<abbr>\b%s\b)' % (r''.join(chars))
+
+        return r'(?P<abbr>\b%s\b)' % ('[' + ']['.join([c for c in text]) + ']')
 
 
 class AbbrPattern(Pattern):
