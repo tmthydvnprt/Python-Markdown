@@ -4,6 +4,7 @@ from . import util
 from . import odict
 from . import inlinepatterns
 
+CODE_PRE_SET = {'code', 'pre'}
 
 def build_treeprocessors(md_instance, **kwargs):
     """ Build the default treeprocessors for Markdown. """
@@ -340,7 +341,7 @@ class PrettifyTreeprocessor(Treeprocessor):
         """ Recursively add linebreaks to ElementTree children. """
 
         i = "\n"
-        if util.isBlockLevel(elem.tag) and elem.tag not in ['code', 'pre']:
+        if util.isBlockLevel(elem.tag) and elem.tag not in CODE_PRE_SET:
             if (not elem.text or not elem.text.strip()) \
                     and len(elem) and util.isBlockLevel(elem[0].tag):
                 elem.text = i
