@@ -386,7 +386,7 @@ class OListProcessor(BlockProcessor):
                 # Check first item for the start index
                 if not items and self.TAG == 'ol':
                     # Detect the integer value of first list item
-                    self.STARTSWITH = INTEGER_RE.match(m.group(1)).group()
+                    self.STARTSWITH = self.INTEGER_RE.match(m.group(1)).group()
                 # Append to the list
                 items.append(m.group(3))
             elif self.INDENT_RE.match(line):
@@ -547,7 +547,7 @@ class ParagraphProcessor(BlockProcessor):
                     if sibling.tail:
                         sibling.tail = '%s\n%s' % (sibling.tail, block)
                     else:
-                        sibling.tail = '\n%s' % block
+                        sibling.tail = '\n' + block
                 else:
                     # Append to parent.text
                     if parent.text:
