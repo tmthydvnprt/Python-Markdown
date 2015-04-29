@@ -20,6 +20,24 @@ def isString(s):
         return isinstance(s, util.string_type)
     return False
 
+def linkText(text, isText, result, parent):
+    if text:
+        if result:
+            if result[-1].tail:
+                result[-1].tail += text
+            else:
+                result[-1].tail = text
+        elif not isText:
+            if parent.tail:
+                parent.tail += text
+            else:
+                parent.tail = text
+        else:
+            if parent.text:
+                parent.text += text
+            else:
+                parent.text = text
+    return result, parent
 
 class Treeprocessor(util.Processor):
     """
@@ -153,23 +171,7 @@ class InlineProcessor(Treeprocessor):
         Returns: list with ElementTree elements with applied inline patterns.
 
         """
-        def linkText(text):
-            if text:
-                if result:
-                    if result[-1].tail:
-                        result[-1].tail += text
-                    else:
-                        result[-1].tail = text
-                elif not isText:
-                    if parent.tail:
-                        parent.tail += text
-                    else:
-                        parent.tail = text
-                else:
-                    if parent.text:
-                        parent.text += text
-                    else:
-                        parent.text = text
+
         result = []
         strartIndex = 0
         while data:
@@ -182,7 +184,7 @@ class InlineProcessor(Treeprocessor):
 
                     if index > 0:
                         text = data[strartIndex:index]
-                        linkText(text)
+                        result, parent = linkText(text, isText, result, parent)
 
                     if not isString(node):  # it's Element
                         for child in [node] + list(node):
@@ -195,7 +197,7 @@ class InlineProcessor(Treeprocessor):
                                 if child.text.strip():
                                     self.__processElementText(child, child)
                     else:  # it's just a string
-                        linkText(node)
+                        result, parent = linkText(node, isText, result, parent)
                         strartIndex = phEndIndex
                         continue
 
@@ -204,14 +206,14 @@ class InlineProcessor(Treeprocessor):
 
                 else:  # wrong placeholder
                     end = index + len(self.__placeholder_prefix)
-                    linkText(data[strartIndex:end])
+                    result, parent = linkText(data[strartIndex:end], isText, result, parent)
                     strartIndex = end
             else:
                 text = data[strartIndex:]
                 if isinstance(data, util.AtomicString):
                     # We don't want to loose the AtomicString
                     text = util.AtomicString(text)
-                linkText(text)
+                result, parent = linkText(text, isText, result, parent)
                 data = ""
 
         return result
