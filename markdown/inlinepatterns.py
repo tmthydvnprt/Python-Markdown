@@ -180,6 +180,13 @@ def handleAttributes(text, parent):
         parent.set(match.group(1), match.group(2).replace('\n', ' '))
     return ATTR_RE.sub(attributeCallback, text)
 
+def codepoint2name(code):
+    """Return entity definition by code, or the code if not defined."""
+    entity = entities.codepoint2name.get(code)
+    if entity:
+        return ''.join((util.AMP_SUBSTITUTE, entity, ';'))
+    else:
+        return ''.join((util.AMP_SUBSTITUTE, '#', str(code), ';'))
 
 """
 The pattern classes
@@ -524,14 +531,6 @@ class AutomailPattern(Pattern):
     def handleMatch(self, m):
         el = util.etree.Element('a')
         email = self.unescape(m.group(2)).replace('mailto:', '')
-
-        def codepoint2name(code):
-            """Return entity definition by code, or the code if not defined."""
-            entity = entities.codepoint2name.get(code)
-            if entity:
-                return "%s%s;" % (util.AMP_SUBSTITUTE, entity)
-            else:
-                return "%s#%d;" % (util.AMP_SUBSTITUTE, code)
 
         letters = [codepoint2name(ord(letter)) for letter in email]
         el.text = util.AtomicString(''.join(letters))
