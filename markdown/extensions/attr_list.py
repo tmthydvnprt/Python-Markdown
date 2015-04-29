@@ -60,6 +60,8 @@ _scanner = Scanner([
     (r' ', None)
 ])
 
+HEADERS = {'h1', 'h2', 'h3', 'h4', 'h5', 'h6'}
+LISTS = {'ul', 'ol'}
 
 def get_attrs(str):
     """ Parse attribute list and return a list of attribute tuples. """
@@ -67,12 +69,13 @@ def get_attrs(str):
 
 
 def isheader(elem):
-    return elem.tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+    return elem.tag in HEADERS
 
 
 class AttrListTreeprocessor(Treeprocessor):
 
     BASE_RE = r'\{\:?([^\}]*)\}'
+    BASE_COMP_RE = re.compile(BASE_RE)
     HEADER_RE = re.compile(r'[ ]+%s[ ]*$' % BASE_RE)
     BLOCK_RE = re.compile(r'\n[ ]*%s[ ]*$' % BASE_RE)
     INLINE_RE = re.compile(r'^%s' % BASE_RE)
@@ -95,7 +98,7 @@ class AttrListTreeprocessor(Treeprocessor):
                     pos = None
                     # find the ul or ol position
                     for i, child in enumerate(elem):
-                        if child.tag in ['ul', 'ol']:
+                        if child.tag in LISTS:
                             pos = i
                             break
                     if pos is None and elem[-1].tail:
@@ -129,7 +132,7 @@ class AttrListTreeprocessor(Treeprocessor):
                     # no children. Get from text.
                     m = RE.search(elem.text)
                     if not m and elem.tag == 'td':
-                        m = re.search(self.BASE_RE, elem.text)
+                        m = self.BASE_COMP_RE.search(elem.text)
                     if m:
                         self.assign_attrs(elem, m.group(1))
                         elem.text = elem.text[:m.start()]
