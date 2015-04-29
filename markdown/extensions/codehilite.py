@@ -20,6 +20,8 @@ from __future__ import unicode_literals
 from . import Extension
 from ..treeprocessors import Treeprocessor
 
+import re
+
 try:
     from pygments import highlight
     from pygments.lexers import get_lexer_by_name, guess_lexer
@@ -163,8 +165,6 @@ class CodeHilite(object):
 
             :::python hl_lines="1 3"
         """
-
-        import re
 
         # split text into lines
         lines = self.src.split("\n")
