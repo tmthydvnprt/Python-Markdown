@@ -41,11 +41,12 @@ class DefListProcessor(BlockProcessor):
         block = raw_block[m.end():]
         no_indent = self.NO_INDENT_RE.match(block)
         if no_indent:
-            d, theRest = (block, None)
+            d = block 
+            theRest = None
         else:
             d, theRest = self.detab(block)
         if d:
-            d = '%s\n%s' % (m.group(2), d)
+            d = m.group(2) + '\n' + d
         else:
             d = m.group(2)
         sibling = self.lastChild(parent)
