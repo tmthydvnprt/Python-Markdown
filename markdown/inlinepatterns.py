@@ -162,9 +162,11 @@ LINE_BREAK_RE = r'  \n'
 
 def dequote(string):
     """Remove quotes from around a string."""
-    if ((string.startswith('"') and string.endswith('"')) or
-       (string.startswith("'") and string.endswith("'"))):
-        return string[1:-1]
+    if len(string) > 0:
+        if (string[0] == '"' and string[-1] == '"') or (string[0] == "'" and string[-1] == "'"):
+            return string[1:-1]
+        else:
+            return string
     else:
         return string
 
