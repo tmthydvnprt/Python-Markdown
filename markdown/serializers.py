@@ -51,8 +51,9 @@ ProcessingInstruction = util.etree.ProcessingInstruction
 
 __all__ = ['to_html_string', 'to_xhtml_string']
 
-HTML_EMPTY = ("area", "base", "basefont", "br", "col", "frame", "hr",
-              "img", "input", "isindex", "link", "meta" "param")
+HTML_EMPTY = {"area", "base", "basefont", "br", "col", "frame", "hr",
+              "img", "input", "isindex", "link", "meta" "param"}
+SCRIPT_STYLE_SET = {'script', 'style'}
 
 try:
     HTML_EMPTY = set(HTML_EMPTY)
@@ -180,7 +181,7 @@ def _serialize_html(write, elem, qnames, namespaces, format):
             else:
                 write(">")
                 if text:
-                    if tag.lower() in ["script", "style"]:
+                    if tag.lower() in SCRIPT_STYLE_SET:
                         write(text)
                     else:
                         write(_escape_cdata(text))
