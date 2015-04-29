@@ -39,7 +39,7 @@ def parse_hl_lines(expr):
         return []
 
     try:
-        return list(map(int, expr.split()))
+        return [int(x) for x in expr.split()]
     except ValueError:
         return []
 
