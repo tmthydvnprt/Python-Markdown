@@ -536,8 +536,6 @@ class AutomailPattern(Pattern):
         letters = [codepoint2name(ord(letter)) for letter in email]
         el.text = util.AtomicString(''.join(letters))
 
-        mailto = "mailto:" + email
-        mailto = "".join([util.AMP_SUBSTITUTE + '#%d;' %
-                          ord(letter) for letter in mailto])
+        mailto = ''.join([util.AMP_SUBSTITUTE + '#' + str(ord(letter)) + ';' for letter in "mailto:" + email])
         el.set('href', mailto)
         return el
