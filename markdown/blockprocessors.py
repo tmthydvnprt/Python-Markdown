@@ -304,13 +304,15 @@ class OListProcessor(BlockProcessor):
     CHILD_RE = re.compile(r'^[ ]{0,3}((\d+\.)|[*+-])[ ]+(.*)')
     # Detect indented (nested) items of either type
     INDENT_RE = re.compile(r'^[ ]{4,7}((\d+\.)|[*+-])[ ]+.*')
+    # Detect integer value of first list item
+    INTEGER_RE = re.compile(r'(\d+)')
     # The integer (python string) with which the lists starts (default=1)
     # Eg: If list is intialized as)
     #   3. Item
     # The ol tag will get starts="3" attribute
     STARTSWITH = '1'
     # List of allowed sibling tags.
-    SIBLING_TAGS = ['ol', 'ul']
+    SIBLING_TAGS = {'ol', 'ul'}
 
     def test(self, parent, block):
         return bool(self.RE.match(block))
@@ -347,7 +349,7 @@ class OListProcessor(BlockProcessor):
             firstitem = items.pop(0)
             self.parser.parseBlocks(li, [firstitem])
             self.parser.state.reset()
-        elif parent.tag in ['ol', 'ul']:
+        elif parent.tag in self.SIBLING_TAGS:
             # this catches the edge case of a multi-item indented list whose
             # first item is in a blank parent-list item:
             # * * subitem1
@@ -384,7 +386,6 @@ class OListProcessor(BlockProcessor):
                 # Check first item for the start index
                 if not items and self.TAG == 'ol':
                     # Detect the integer value of first list item
-                    INTEGER_RE = re.compile('(\d+)')
                     self.STARTSWITH = INTEGER_RE.match(m.group(1)).group()
                 # Append to the list
                 items.append(m.group(3))
