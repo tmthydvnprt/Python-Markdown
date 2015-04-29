@@ -292,6 +292,20 @@ class SimpleTagPattern(Pattern):
         el.text = m.group(3)
         return el
 
+class MultiTagPattern(Pattern):
+    """
+    Return element of type `tag` definied in group(2) of pattern and 
+    with a text attribute of group(3) of a pattern.
+    """
+    def __init__(self, pattern, tags):
+        Pattern.__init__(self, pattern)
+        # find which match
+        self.tags = tags
+
+    def handleMatch(self, m):
+        el = util.etree.Element(self.tags[m.group(2)])
+        el.text = m.group(3)
+        return el
 
 class SubstituteTagPattern(SimpleTagPattern):
     """ Return an element of type `tag` with no children. """
