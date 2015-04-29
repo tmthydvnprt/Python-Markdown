@@ -28,7 +28,12 @@ FN_BACKLINK_TEXT = "zz1337820767766393qq"
 NBSP_PLACEHOLDER = "qq3936677670287331zz"
 DEF_RE = re.compile(r'[ ]{0,3}\[\^([^\]]*)\]:\s*(.*)')
 TABBED_RE = re.compile(r'((\t)|(    ))(.*)')
+OUTPUT_FORMATS = {'html5', 'xhtml5'}
 
+def detab(line):
+    match = TABBED_RE.match(line)
+    if match:
+        return match.group(4)
 
 class FootnoteExtension(Extension):
     """ Footnote Extension. """
@@ -108,7 +113,7 @@ class FootnoteExtension(Extension):
         self.footnotes[id] = text
 
     def get_separator(self):
-        if self.md.output_format in ['html5', 'xhtml5']:
+        if self.md.output_format in OUTPUT_FORMATS:
             return '-'
         return ':'
 
@@ -144,7 +149,7 @@ class FootnoteExtension(Extension):
             self.parser.parseChunk(li, self.footnotes[id])
             backlink = etree.Element("a")
             backlink.set("href", "#" + self.makeFootnoteRefId(id))
-            if self.md.output_format not in ['html5', 'xhtml5']:
+            if self.md.output_format not in OUTPUT_FORMATS:
                 backlink.set("rev", "footnote")  # Invalid in HTML5
             backlink.set("class", "footnote-backref")
             backlink.set(
@@ -213,11 +218,6 @@ class FootnotePreprocessor(Preprocessor):
         blank_line = False  # have we encountered a blank line yet?
         i = 0  # to keep track of where we are
 
-        def detab(line):
-            match = TABBED_RE.match(line)
-            if match:
-                return match.group(4)
-
         for line in lines:
             if line.strip():  # Non-blank line
                 detabbed_line = detab(line)
@@ -271,7 +271,7 @@ class FootnotePattern(Pattern):
             a = etree.SubElement(sup, "a")
             sup.set('id', self.footnotes.makeFootnoteRefId(id))
             a.set('href', '#' + self.footnotes.makeFootnoteId(id))
-            if self.footnotes.md.output_format not in ['html5', 'xhtml5']:
+            if self.footnotes.md.output_format not in OUTPUT_FORMATS:
                 a.set('rel', 'footnote')  # invalid in HTML5
             a.set('class', 'footnote-ref')
             a.text = text_type(self.footnotes.footnotes.index(id) + 1)
