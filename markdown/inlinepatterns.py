@@ -261,7 +261,7 @@ class Pattern(object):
     def unescape(self, text):
         """ Return unescaped text given text with an inline placeholder. """
         try:
-            stash = self.markdown.treeprocessors['inline'].stashed_nodes
+            self.stash = self.markdown.treeprocessors['inline'].stashed_nodes
         except KeyError:  # pragma: no cover
             return text
 
