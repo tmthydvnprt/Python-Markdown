@@ -44,6 +44,8 @@ class Postprocessor(util.Processor):
         """
         pass  # pragma: no cover
 
+BLOCK_RE = re.compile(r'^\<\/?([^ >]+)')
+COMMENT_PHP_ETC = {'!', '?', '@', '%'}
 
 class RawHtmlPostprocessor(Postprocessor):
     """ Restore raw html to the document. """
@@ -79,9 +81,9 @@ class RawHtmlPostprocessor(Postprocessor):
         return html.replace('"', '&quot;')
 
     def isblocklevel(self, html):
-        m = re.match(r'^\<\/?([^ >]+)', html)
+        m = BLOCK_RE.match(html)
         if m:
-            if m.group(1)[0] in ('!', '?', '@', '%'):
+            if m.group(1)[0] in COMMENT_PHP_ETC:
                 # Comment, php etc...
                 return True
             return util.isBlockLevel(m.group(1))
