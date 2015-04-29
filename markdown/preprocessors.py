@@ -190,9 +190,8 @@ class HtmlBlockPreprocessor(Preprocessor):
         return items
 
     def run(self, lines):
-        text = "\n".join(lines)
         new_blocks = []
-        text = text.rsplit("\n\n")
+        text = "\n".join(lines).rsplit("\n\n")
         items = []
         left_tag = ''
         right_tag = ''
@@ -200,15 +199,15 @@ class HtmlBlockPreprocessor(Preprocessor):
 
         while text:
             block = text[0]
-            if block.startswith("\n"):
+            if len(block) > 0 and block[0] == '\n':
                 block = block[1:]
             text = text[1:]
 
-            if block.startswith("\n"):
+            if len(block) > 0 and block[0] == '\n':
                 block = block[1:]
 
             if not in_tag:
-                if block.startswith("<") and len(block.strip()) > 1:
+                if len(block.strip()) > 1 and block[0] == '<':
 
                     if block[1:4] == "!--":
                         # is a comment block
@@ -232,7 +231,7 @@ class HtmlBlockPreprocessor(Preprocessor):
                         new_blocks.append(block.strip())
                         continue
 
-                    if block.rstrip().endswith(">") \
+                    if block.rstrip()[-1] == ">" \
                             and self._equal_tags(left_tag, right_tag):
                         if self.markdown_in_raw and 'markdown' in attrs.keys():
                             block = block[left_index:-len(right_tag) - 2]
