@@ -248,6 +248,16 @@ class Pattern(object):
         """ Return class name, to define pattern type """
         return self.__class__.__name__
 
+    def get_stash(m):
+        id = m.group(1)
+        if id in self.stash:
+            value = self.stash.get(id)
+            if isinstance(value, util.string_type):
+                return value
+            else:
+                # An etree Element - return text content only
+                return ''.join(itertext(value))
+
     def unescape(self, text):
         """ Return unescaped text given text with an inline placeholder. """
         try:
@@ -255,16 +265,7 @@ class Pattern(object):
         except KeyError:  # pragma: no cover
             return text
 
-        def get_stash(m):
-            id = m.group(1)
-            if id in stash:
-                value = stash.get(id)
-                if isinstance(value, util.string_type):
-                    return value
-                else:
-                    # An etree Element - return text content only
-                    return ''.join(itertext(value))
-        return util.INLINE_PLACEHOLDER_RE.sub(get_stash, text)
+        return util.INLINE_PLACEHOLDER_RE.sub(self.get_stash, text)
 
 
 class SimpleTextPattern(Pattern):
