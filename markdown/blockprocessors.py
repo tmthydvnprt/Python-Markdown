@@ -452,11 +452,11 @@ class SetextHeaderProcessor(BlockProcessor):
     def run(self, parent, blocks):
         lines = blocks.pop(0).split('\n')
         # Determine level. ``=`` is 1 and ``-`` is 2.
-        if lines[1].startswith('='):
+        if len(lines[1]) > 0 and lines[1][0] == '=':
             level = 1
         else:
             level = 2
-        h = util.etree.SubElement(parent, 'h%d' % level)
+        h = util.etree.SubElement(parent, 'h' + str(level))
         h.text = lines[0].strip()
         if len(lines) > 2:
             # Block contains additional lines. Add to  master blocks for later.
