@@ -250,7 +250,7 @@ class Pattern(object):
         """ Return class name, to define pattern type """
         return self.__class__.__name__
 
-    def get_stash(m):
+    def get_stash(self, m):
         id = m.group(1)
         if id in self.stash:
             value = self.stash.get(id)
