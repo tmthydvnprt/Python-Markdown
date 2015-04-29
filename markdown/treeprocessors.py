@@ -260,9 +260,9 @@ class InlineProcessor(Treeprocessor):
 
         placeholder = self.__stashNode(node, pattern.type())
 
-        return "%s%s%s%s" % (leftData,
+        return ''.join((leftData,
                              match.group(1),
-                             placeholder, match.groups()[-1]), True, 0
+                             placeholder, match.groups()[-1])), True, 0
 
     def run(self, tree):
         """Apply inline patterns to a parsed Markdown tree.
