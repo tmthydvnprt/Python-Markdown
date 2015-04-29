@@ -154,9 +154,9 @@ class OrderedDict(dict):
             i = 0
         elif location == '_end':
             i = None
-        elif location.startswith('<') or location.startswith('>'):
+        elif location[0] == '<' or location[0] == '>':
             i = self.index(location[1:])
-            if location.startswith('>'):
+            if location[0] == '>':
                 if i >= len(self):
                     # last item
                     i = None
