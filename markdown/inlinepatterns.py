@@ -173,6 +173,8 @@ def dequote(string):
 
 ATTR_RE = re.compile("\{@([^\}]*)=([^\}]*)}")  # {@id=123}
 
+LOCLESS_SCHEMES = {'', 'mailto', 'news'}
+ALLOWED_SCHEMES = LOCLESS_SCHEMES | {'http', 'https', 'ftp', 'ftps'}
 
 def handleAttributes(text, parent):
     """Set values of an element based on attribute definitions ({@id=123})."""
@@ -422,13 +424,11 @@ class LinkPattern(Pattern):
             # Bad url - so bad it couldn't be parsed.
             return ''
 
-        locless_schemes = ['', 'mailto', 'news']
-        allowed_schemes = locless_schemes + ['http', 'https', 'ftp', 'ftps']
-        if scheme not in allowed_schemes:
+        if scheme not in ALLOWED_SCHEMES:
             # Not a known (allowed) scheme. Not safe.
             return ''
 
-        if netloc == '' and scheme not in locless_schemes:  # pragma: no cover
+        if netloc == '' and scheme not in LOCLESS_SCHEMES:  # pragma: no cover
             # This should not happen. Treat as suspect.
             return ''
 
