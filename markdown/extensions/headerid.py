@@ -23,6 +23,7 @@ from ..util import parseBoolValue
 from .toc import slugify, unique, stashedHTML2text
 import warnings
 
+HEADERS = {'h1', 'h2', 'h3', 'h4', 'h5', 'h6'}
 
 class HeaderIdTreeprocessor(Treeprocessor):
     """ Assign IDs to headers. """
@@ -34,7 +35,7 @@ class HeaderIdTreeprocessor(Treeprocessor):
         slugify = self.config['slugify']
         sep = self.config['separator']
         for elem in doc:
-            if elem.tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
+            if elem.tag in HEADERS:
                 if force_id:
                     if "id" in elem.attrib:
                         id = elem.get('id')
@@ -46,7 +47,7 @@ class HeaderIdTreeprocessor(Treeprocessor):
                     level = int(elem.tag[-1]) + start_level
                     if level > 6:
                         level = 6
-                    elem.tag = 'h%d' % level
+                    elem.tag = 'h' + str(level)
 
     def _get_meta(self):
         """ Return meta data suported by this ext as a tuple """
