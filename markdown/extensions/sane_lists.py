@@ -25,13 +25,13 @@ import re
 class SaneOListProcessor(OListProcessor):
 
     CHILD_RE = re.compile(r'^[ ]{0,3}((\d+\.))[ ]+(.*)')
-    SIBLING_TAGS = ['ol']
+    SIBLING_TAGS = {'ol'}
 
 
 class SaneUListProcessor(UListProcessor):
 
     CHILD_RE = re.compile(r'^[ ]{0,3}(([*+-]))[ ]+(.*)')
-    SIBLING_TAGS = ['ul']
+    SIBLING_TAGS = {'ul'}
 
 
 class SaneListExtension(Extension):
