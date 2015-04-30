@@ -223,10 +223,7 @@ class TocTreeprocessor(Treeprocessor):
 
     def run(self, doc):
         # Get a list of id attributes
-        used_ids = set()
-        for el in doc.iter():
-            if "id" in el.attrib:
-                used_ids.add(el.attrib["id"])
+        used_ids = {el.attrib["id"] for el in doc.iter() if "id" in el.attrib}
 
         toc_tokens = []
         for el in doc.iter():
