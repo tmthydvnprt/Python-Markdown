@@ -239,9 +239,9 @@ class FootnotePreprocessor(Preprocessor):
                 i += 1  # advance
 
                 # Find the next non-blank line
-                for j in range(i, len(lines)):
-                    if lines[j].strip():
-                        next_line = lines[j]
+                for lin in lines[i:]:
+                    if lin.strip():
+                        next_line = lin
                         break
                 else:
                     break  # There is no more text; we are done.
