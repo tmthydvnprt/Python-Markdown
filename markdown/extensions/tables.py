@@ -42,19 +42,20 @@ class TableProcessor(BlockProcessor):
         rows = [] if len(block) < 3 else block[2:]
         # Get format type (bordered by pipes or not)
         border = False
-        if header.startswith('|'):
+        if len(header) > 1 and header[0] == '|':
             border = True
         # Get alignment of columns
         align = []
         for c in self._split_row(seperator, border):
-            if c.startswith(':') and c.endswith(':'):
-                align.append('center')
-            elif c.startswith(':'):
-                align.append('left')
-            elif c.endswith(':'):
-                align.append('right')
-            else:
-                align.append(None)
+            if len(c) > 0:
+                if c[0] == ':' and c[-1] == ':':
+                    align.append('center')
+                elif c[0] == ':':
+                    align.append('left')
+                elif c[-1] == ':':
+                    align.append('right')
+                else:
+                    align.append(None)
         # Build table
         table = etree.SubElement(parent, 'table')
         thead = etree.SubElement(table, 'thead')
@@ -84,9 +85,9 @@ class TableProcessor(BlockProcessor):
     def _split_row(self, row, border):
         """ split a row of text into list of cells. """
         if border:
-            if row.startswith('|'):
+            if row[0] == '|':
                 row = row[1:]
-            if row.endswith('|'):
+            if row[-1] == '|':
                 row = row[:-1]
         return [x.replace(r'\|', r'|') for x in UNESCAPED_PIPE_RE.split(row)]
 
