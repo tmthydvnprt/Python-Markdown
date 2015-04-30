@@ -144,10 +144,10 @@ class FootnoteExtension(Extension):
         etree.SubElement(div, "hr")
         ol = etree.SubElement(div, "ol")
 
-        for id in self.footnotes.keys():
+        for i, (id, val) in enumerate (self.footnotes.items()):
             li = etree.SubElement(ol, "li")
             li.set("id", self.makeFootnoteId(id))
-            self.parser.parseChunk(li, self.footnotes[id])
+            self.parser.parseChunk(li, val)
             backlink = etree.Element("a")
             backlink.set("href", "#" + self.makeFootnoteRefId(id))
             if self.md.output_format not in OUTPUT_FORMATS:
@@ -156,7 +156,7 @@ class FootnoteExtension(Extension):
             backlink.set(
                 "title",
                 "Jump back to footnote %d in the text" %
-                (self.footnotes.index(id)+1)
+                (i+1)
             )
             backlink.text = FN_BACKLINK_TEXT
 
