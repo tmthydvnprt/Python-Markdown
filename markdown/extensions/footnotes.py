@@ -91,7 +91,7 @@ class FootnoteExtension(Extension):
         self.footnotes = OrderedDict()
         self.unique_prefix += 1
 
-    def finder(element):
+    def finder(self, element):
         placeholder = None
         for child in element:
             if child.text:
@@ -100,7 +100,7 @@ class FootnoteExtension(Extension):
             if child.tail:
                 if child.tail.find(self.getConfig("PLACE_MARKER")) > -1:
                     return child, element, False
-            placeholder = finder(child)
+            placeholder = self.finder(child)
         return placeholder
 
     def findFootnotesPlaceholder(self, root):
