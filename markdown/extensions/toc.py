@@ -194,6 +194,18 @@ class TocTreeprocessor(Treeprocessor):
         permalink.attrib["title"] = "Permanent link"
         c.append(permalink)
 
+    def build_etree_ul(self, toc_list, parent):
+        ul = etree.SubElement(parent, "ul")
+        for item in toc_list:
+            # List item link, to be inserted into the toc div
+            li = etree.SubElement(ul, "li")
+            link = etree.SubElement(li, "a")
+            link.text = item.get('name', '')
+            link.attrib["href"] = '#' + item.get('id', '')
+            if item['children']:
+                self.build_etree_ul(item['children'], li)
+        return ul
+
     def build_toc_div(self, toc_list):
         """ Return a string div given a toc list. """
         div = etree.Element("div")
@@ -205,19 +217,7 @@ class TocTreeprocessor(Treeprocessor):
             header.attrib["class"] = "toctitle"
             header.text = self.title
 
-        def build_etree_ul(toc_list, parent):
-            ul = etree.SubElement(parent, "ul")
-            for item in toc_list:
-                # List item link, to be inserted into the toc div
-                li = etree.SubElement(ul, "li")
-                link = etree.SubElement(li, "a")
-                link.text = item.get('name', '')
-                link.attrib["href"] = '#' + item.get('id', '')
-                if item['children']:
-                    build_etree_ul(item['children'], li)
-            return ul
-
-        build_etree_ul(toc_list, div)
+        self.build_etree_ul(toc_list, div)
         prettify = self.markdown.treeprocessors.get('prettify')
         if prettify:
             prettify.run(div)
