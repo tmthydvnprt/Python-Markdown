@@ -37,9 +37,9 @@ def unique(id, ids):
     while id in ids or not id:
         m = IDCOUNT_RE.match(id)
         if m:
-            id = '%s_%d' % (m.group(1), int(m.group(2))+1)
+            id = '_'.join((m.group(1), str(int(m.group(2))+1)))
         else:
-            id = '%s_%d' % (id, 1)
+            id += '_1'
     ids.add(id)
     return id
 
@@ -138,8 +138,6 @@ class TocTreeprocessor(Treeprocessor):
         if self.use_permalinks is None:
             self.use_permalinks = config["permalink"]
 
-        self.header_rgx = re.compile("[Hh][123456]")
-
     def iterparent(self, root):
         ''' Iterator wrapper to get parent and child all at once. '''
         for parent in root.iter():
@@ -171,7 +169,7 @@ class TocTreeprocessor(Treeprocessor):
         level = int(elem.tag[-1]) + self.base_level
         if level > 6:
             level = 6
-        elem.tag = 'h%d' % level
+        elem.tag = 'h' + str(level)
 
     def add_anchor(self, c, elem_id):  # @ReservedAssignment
         anchor = etree.Element("a")
