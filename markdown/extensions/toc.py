@@ -21,16 +21,16 @@ from ..util import etree, parseBoolValue, AMP_SUBSTITUTE, HTML_PLACEHOLDER_RE, s
 import re
 import unicodedata
 
+WHITE_SPACE_SLUG_RE = re.compile(r'[^\w\s-]')
+REMOVE_TAGS_RE = re.compile(r'(<[^>]+>)|(&[\#a-zA-Z0-9]+;)')
+IDCOUNT_RE = re.compile(r'^(.*)_([0-9]+)$')
+PRE_CODE = {'pre', 'code'}
 
 def slugify(value, separator):
     """ Slugify a string, to make it URL friendly. """
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
-    value = re.sub('[^\w\s-]', '', value.decode('ascii')).strip().lower()
-    return re.sub('[%s\s]+' % separator, separator, value)
-
-
-IDCOUNT_RE = re.compile(r'^(.*)_([0-9]+)$')
-
+    value = WHITE_SPACE_SLUG_RE.sub('', value.decode('ascii')).strip().lower()
+    return re.sub('[' + separator + '\s]+', separator, value)
 
 def unique(id, ids):
     """ Ensure id is unique in set of ids. Append '_1', '_2'... if not """
@@ -55,7 +55,7 @@ def stashedHTML2text(text, md):
         if md.safeMode and not safe:  # pragma: no cover
             return ''
         # Strip out tags and entities - leaveing text
-        return re.sub(r'(<[^>]+>)|(&[\#a-zA-Z0-9]+;)', '', raw)
+        return REMOVE_TAGS_RE.sub('', raw)
 
     return HTML_PLACEHOLDER_RE.sub(_html_sub, text)
 
@@ -122,6 +122,7 @@ def nest_toc_tokens(toc_list):
 
     return ordered_list
 
+HEADER_SET = {'h1', 'h2', 'h3', 'h4', 'h5', 'h6'}
 
 class TocTreeprocessor(Treeprocessor):
     def __init__(self, md, config):
@@ -159,7 +160,7 @@ class TocTreeprocessor(Treeprocessor):
             # would causes an enless loop of placing a new TOC
             # inside previously generated TOC.
             if c.text and c.text.strip() == self.marker and \
-               not self.header_rgx.match(c.tag) and c.tag not in ['pre', 'code']:
+               c.tag not in HEADER_SET and c.tag not in PRE_CODE:
                 for i in range(len(p)):
                     if p[i] == c:
                         p[i] = elem
@@ -231,7 +232,7 @@ class TocTreeprocessor(Treeprocessor):
 
         toc_tokens = []
         for el in doc.iter():
-            if isinstance(el.tag, string_type) and self.header_rgx.match(el.tag):
+            if el.tag in HEADER_SET:
                 self.set_level(el)
                 text = ''.join(el.itertext()).strip()
 
