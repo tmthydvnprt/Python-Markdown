@@ -22,6 +22,7 @@ from ..blockprocessors import BlockProcessor
 from ..util import etree
 import re
 
+TABLE_SEPARATORS = {'|', ':', '-'}
 UNESCAPED_PIPE_RE = re.compile(r'(?<!\\)\|')
 
 class TableProcessor(BlockProcessor):
@@ -31,7 +32,7 @@ class TableProcessor(BlockProcessor):
         rows = block.split('\n')
         return (len(rows) > 1 and '|' in rows[0] and
                 '|' in rows[1] and '-' in rows[1] and
-                rows[1].strip()[0] in ['|', ':', '-'])
+                rows[1].strip()[0] in TABLE_SEPARATORS)
 
     def run(self, parent, blocks):
         """ Parse a table block and build table. """
