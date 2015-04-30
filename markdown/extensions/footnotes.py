@@ -91,21 +91,22 @@ class FootnoteExtension(Extension):
         self.footnotes = OrderedDict()
         self.unique_prefix += 1
 
+    def finder(element):
+        placeholder = None
+        for child in element:
+            if child.text:
+                if child.text.find(self.getConfig("PLACE_MARKER")) > -1:
+                    return child, element, True
+            if child.tail:
+                if child.tail.find(self.getConfig("PLACE_MARKER")) > -1:
+                    return child, element, False
+            placeholder = finder(child)
+        return placeholder
+
     def findFootnotesPlaceholder(self, root):
         """ Return ElementTree Element that contains Footnote placeholder. """
-        def finder(element):
-            placeholder = None
-            for child in element:
-                if child.text:
-                    if child.text.find(self.getConfig("PLACE_MARKER")) > -1:
-                        return child, element, True
-                if child.tail:
-                    if child.tail.find(self.getConfig("PLACE_MARKER")) > -1:
-                        return child, element, False
-                placeholder = finder(child)
-            return placeholder
 
-        res = finder(root)
+        res = self.finder(root)
         return res
 
     def setFootnote(self, id, text):
