@@ -128,10 +128,9 @@ class FootnoteExtension(Extension):
     def makeFootnoteRefId(self, id):
         """ Return footnote back-link id. """
         if self.getConfig("UNIQUE_IDS"):
-            return 'fnref%s%d-%s' % (self.get_separator(),
-                                     self.unique_prefix, id)
+            return 'fnref' + self.get_separator() + self.unique_prefix + '-' + id
         else:
-            return 'fnref%s%s' % (self.get_separator(), id)
+            return 'fnref' + self.get_separator() + id
 
     def makeFootnotesDiv(self, root):
         """ Return div of footnotes as et Element. """
