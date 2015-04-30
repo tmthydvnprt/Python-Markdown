@@ -159,8 +159,8 @@ class TocTreeprocessor(Treeprocessor):
             # inside previously generated TOC.
             if c.text and c.text.strip() == self.marker and \
                c.tag not in HEADER_SET and c.tag not in PRE_CODE:
-                for i in range(len(p)):
-                    if p[i] == c:
+                for i, x in enumerate(p):
+                    if x == c:
                         p[i] = elem
                         break
 
